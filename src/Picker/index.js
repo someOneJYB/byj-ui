@@ -1,28 +1,33 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import CityPicker from './CityPicker';
 import MultiPicker from './MultiPicker'
 import './index.less'
+
 function swipeDirection (x1, x2, y1, y2) {
-    return Math.abs(x1 - x2) >= Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'Left' : 'Right') : (y1 - y2 > 0 ? 'Up' : 'Down');
+    if (Math.abs(x1 - x2) >= Math.abs(y1 - y2)) {
+        return x1 - x2 > 0 ? 'Left' : 'Right'
+    }
+
+return y1 - y2 > 0 ? 'Up' : 'Down';
 }
 class Picker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            visible: props.visible || true,
-            data: [
-                "夜的第一张", "夜的第二张", "夜的第三张", "夜的第四张", "夜的第五张", "夜的第六张", "夜的第八张",
-            ],
-            activeIndex: 0,
+            'visible': props.visible || true,
+            'data': props.data,
+            'activeIndex': props.activeIndex || 0
 
         }
 
     }
 
-    static getDerivedStateFromProps(props) {
-        return {
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({
             ...props
-        }
+        })
     }
 
     start = (e) => {
@@ -35,67 +40,79 @@ class Picker extends React.Component {
         this.endY = e.changedTouches[0].pageY;
         const { data } = this.state
         const r = swipeDirection(this.startX, this.endX, this.startY, this.endY);
-        let add = Math.floor(Math.abs(this.endY-this.startY)/30)
+        let add = Math.floor(Math.abs(this.endY - this.startY) / 30)
         const { onChange } = this.props;
         add = add === 0 ? 1 : add
-        if(r === 'Up') {
-            let index = this.state.activeIndex+add;
+        if (r === 'Up') {
+            let index = this.state.activeIndex + add;
             index = index > data.length ? data.length : index;
             onChange && onChange(index)
-            console.log(index, data[index])
+            console.log(index, data[index]);
             this.setState({
-                activeIndex: index
+                'activeIndex': index
             })
         }
-        if(r === 'Down') {
-            let index = this.state.activeIndex-add;
+        if (r === 'Down') {
+            let index = this.state.activeIndex - add;
             index = index < 0 ? 0 : index;
             console.log(index, data[index])
             onChange && onChange(index)
             this.setState({
-                activeIndex: index
+                'activeIndex': index
             })
         }
     }
 
     close = () => {
         this.setState({
-            visible: false,
+            'visible': false
         })
     }
 
     choose = () => {
         const { onChoose } = this.props;
-        const { data, activeIndex } =this.state
+        const { data, activeIndex } = this.state
         onChoose && onChoose(data[activeIndex], activeIndex)
         this.close()
     }
 
 
+    render() {
+        let { data, activeIndex, visible } = this.state;
+        const l = 2 - activeIndex;
+        if (!visible) {
+            return null
+        }
+        console.log(l, 'l')
 
-
-    render(){
-        const { data, activeIndex, visible } =this.state
-        console.log('render', this.state.activeIndex)
-        let l = 2-activeIndex;
-        if(!visible) return null
-        return <div>
+return <div>
             <ul className="picker-header">
                 <li onClick={this.close}>取消</li>
                 <li onClick={this.choose}>确定</li>
             </ul>
             <div className="picker-all">
             <div className="absolute-item"></div>
-            <div className="picker-con" style={{ height: data.length * 30 +'px', transform: `translate3d(0, ${l*30}px, 0)` }} onTouchStart={this.start} onTouchMove={this.move} onTouchEnd={this.end}>
+            <div className="picker-con" style={{ 'height': `${data.length * 30}px`,
+'transform': `translate3d(0, ${l * 30}px, 0)` }} onTouchStart={this.start}  onTouchEnd={this.end}>
                 {
-                    data.map(item => {
-                        return <div key={item} className="picker-item">{item}</div>
-                    })
+                    data.map((item) => <div key={item} className="picker-item">{item}</div>)
                 }
             </div>
         </div>
         </div>
     }
+}
+Picker.propTypes = {
+    'visible': PropTypes.bool,
+    'data': PropTypes.array,
+    'onChoose': PropTypes.func,
+    'activeIndex': PropTypes.number,
+    'onChange': PropTypes.func
+}
+Picker.defaultProps = {
+    'visible': true,
+    'data': [],
+    'activeIndex': 0
 }
 Picker.MultiPicker = MultiPicker
 Picker.CityPicker = CityPicker

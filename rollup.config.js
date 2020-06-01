@@ -8,105 +8,99 @@ import localResolve from 'rollup-plugin-local-resolve';
 
 import pkg from './package.json';
 
-const fs = require('fs')
+const fs = require('fs');
+
 const INPUT_FILE_PATH = './src/index.js';
 const OUTPUT_NAME = 'Example';
 
 const GLOBALS = {
-  react: 'React',
+  'react': 'React',
   'react-dom': 'ReactDOM',
   'prop-types': 'PropTypes'
 };
 
 const PLUGINS = [
   postcss({
-    extract: false,
-    inject: false,
-    extensions: ['.less'],
-    plugins: [
-      autoprefixer,
-    ],
+    'extract': false,
+    'inject': false,
+    'extensions': ['.less'],
+    'plugins': [autoprefixer]
   }),
   babel({
-    exclude: 'node_modules/**',
+    'exclude': 'node_modules/**'
   }),
   localResolve(),
   resolve({
-    browser: true,
+    'browser': true
   }),
   commonjs(),
-  filesize(),
+  filesize()
 ];
 
 const EXTERNAL = [
   'react',
   'react-dom',
-  'prop-types',
+  'prop-types'
 ];
 
 const OUTPUT_DATA = [
   {
-    file: pkg.browser,
-    format: 'umd',
+    'file': pkg.browser,
+    'format': 'umd'
   },
   {
-    file: pkg.main,
-    format: 'cjs',
+    'file': pkg.main,
+    'format': 'cjs'
   },
   {
-    file: pkg.module,
-    format: 'es',
-  },
+    'file': pkg.module,
+    'format': 'es'
+  }
 ];
-
 let config = OUTPUT_DATA.map(({ file, format }) => ({
-  input: INPUT_FILE_PATH,
-  output: {
+  'input': INPUT_FILE_PATH,
+  'output': {
     file,
     format,
-    name: OUTPUT_NAME,
-    globals: GLOBALS,
+    'name': OUTPUT_NAME,
+    'globals': GLOBALS
   },
-  external: EXTERNAL,
-  plugins: PLUGINS,
+  'external': EXTERNAL,
+  'plugins': PLUGINS
 }));
 
 
+const readDir = fs.readdirSync('./src').slice(0, -1);
+const resultFile = {};
+readDir.splice(readDir.indexOf('images'), 1);
+readDir.splice(readDir.indexOf('index'), 1);
+const v = readDir.map((item) => {
+  resultFile[item] = `./src/${item}/index.js`;
 
-const readDir = fs.readdirSync("./src").slice(0, -1);
-const resultFile =  {};
-readDir.splice(readDir.indexOf('images'), 1)
-readDir.splice(readDir.indexOf('index'), 1)
-let v = readDir.map(item => {
-  resultFile[item] = './src/'+item +'/index.js'
-  return {
-    input: './src/'+item +'/index.js',
-    output: {
-      file: 'lib/' + item + '/index.js',
-      format: 'cjs',
+return {
+    'input': `./src/${item}/index.js`,
+    'output': {
+      'file': `lib/${item}/index.js`,
+      'format': 'cjs'
     }
+  };
+});
+const v2 = readDir.map((item) => ({
+  'input': `./src/${item}/index.js`,
+  'output': {
+    'file': `es/${item}/index.js`,
+    'format': 'es'
   }
-})
-let v2 = readDir.map(item => {
-  return {
-    input: './src/'+item +'/index.js',
-    output: {
-      file: 'es/' + item + '/index.js',
-      format: 'es',
-    }
-  }
-})
-let all = v.concat(v2);
-config = all.map(item => {
-  return {
-    input: item.input,
-    output: {
-      file: item.output.file,
-      format: item.output.format,
-      globals: GLOBALS,
-    },
-    external: EXTERNAL,
-    plugins: item.plugins || PLUGINS,
-  }
-})
+}));
+const all = v.concat(v2);
+config = all.map((item) => ({
+  'input': item.input,
+  'output': {
+    'file': item.output.file,
+    'format': item.output.format,
+    'globals': GLOBALS
+  },
+  'external': EXTERNAL,
+  'plugins': item.plugins || PLUGINS
+}));
 export default config;

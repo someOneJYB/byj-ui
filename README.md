@@ -11,3 +11,14 @@ yarn build:static
 yarn start
 ```
 ### rollup 打包 js 和 webpack 打包静态
+
+```js
+{
+  "hooks": {
+    "pre-commit": "npm run build",
+    "commit-msg": "npm run commitmsg",
+    "pre-push": "npm run test"
+  }
+}
+
+```

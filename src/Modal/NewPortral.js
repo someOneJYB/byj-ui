@@ -8,8 +8,9 @@ class NewPortal extends React.Component {
         this.node = document.createElement('div');
         document.body.appendChild(this.node);
     }
+
     static defaultProps = {
-        children: null
+        'children': null
     }
 
     render() {
@@ -17,7 +18,7 @@ class NewPortal extends React.Component {
         // 直接通过显隐表示
         return ReactDOM.createPortal(
             children,
-            this.node,
+            this.node
         );
     }
 }

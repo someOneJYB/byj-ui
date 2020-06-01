@@ -2,3 +2,15 @@ coverage/*
 build
 node_modules
 *.stories.jsx
+example/
+src/stories/
+src/index.js
+lib/
+es/
+config/
+src/
+postcss.config.js
+commitlint.config.js
+jest.config.js
+rollup.config.js
+setupTests.js

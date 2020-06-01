@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import TreeNode from './node';
 import { mapChildren } from './util';
 
@@ -13,51 +14,54 @@ import { mapChildren } from './util';
 //     let child = node.props.children;
 //     mapChildren(child, (item, index) => {
 //         data['childKey'].push(key + "-" + index);
-//         return TreeNodeToData(item, key+"-"+index, track, key)
+//         return treeNodeToData(item, key+"-"+index, track, key)
 //     })
 // }
-// TreeNodeToData(treeNode, key, track, parentKey)
-function TreeNodeToData(treeNode, key, track, parentKey) {
+// treeNodeToData(treeNode, key, track, parentKey)
+function treeNodeToData(treeNode, key, track, parentKey) {
     // console.log(key)
-    let data = {
+    const data = {
         key,
-        childKey: [],
-        parentKey: parentKey,
+        'childKey': [],
+        parentKey
     }
-    if(!treeNode) return;
+    if (!treeNode) {
+ return;
+}
     track[key] = data;
     const { children } = treeNode.props;
     mapChildren(children, (item, index) => {
-        data['childKey'].push(key + "-" + index);
-        return TreeNodeToData(item, key+"-"+index, track, key)
+        data.childKey.push(`${key}-${index}`);
+
+return treeNodeToData(item, `${key}-${index}`, track, key)
     })
 }
 class Tree extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            checkedKeys: props.checkedKeys || [],
-            halfCheckedKeys: props.halfCheckedKeys || [],
-            expandedKeys: props.defaultExpandedKeys || []
+            'checkedKeys': props.checkedKeys,
+            'halfCheckedKeys': props.halfCheckedKeys,
+            'expandedKeys': props.defaultExpandedKeys || []
         };
     }
 
     componentDidMount() {
-        let nodeTrack = {};
-        let { children } = this.props;
-        console.log(children)
-        children.map((item, index) => {
-            TreeNodeToData(item, index+'', nodeTrack, null)
-        })
-        console.log(nodeTrack)
+        const nodeTrack = {};
+        const { children } = this.props;
+        children.map((item, index) => treeNodeToData(
+item,
+                    `${index}`,
+                    nodeTrack,
+                    null
+                ))
         // 所有的信息都在这里
         this.setState({
-            nodeTrack: nodeTrack,
+            nodeTrack
         })
     }
 
     onNodeClick = (halfCheckedKeys, checkedKeys) => {
-        console.log(halfCheckedKeys, checkedKeys,'halfCheckedKeys, checkedKeys')
         this.setState({
             halfCheckedKeys,
             checkedKeys
@@ -66,38 +70,50 @@ class Tree extends Component {
 
     updateExpanded = (expandedKeys) => {
         this.setState({
-            expandedKeys,
+            expandedKeys
         })
     }
 
-    renderChildren = (child, key) => {
-        return React.cloneElement(child, {
-            Key: key+'',
-            initKey: child.key,
-            isHalfChecked: this.state.halfCheckedKeys.includes(key+''),
-            isChecked: this.state.checkedKeys.includes(key+''),
-            isExpanded: this.state.expandedKeys.includes(child.key),
-            halfCheckedKeys: this.state.halfCheckedKeys,
-            checkedKeys: this.state.checkedKeys,
-            expandedKeys: this.state.expandedKeys,
-            keyEntities: this.state.nodeTrack,
-            onNodeClick: this.onNodeClick,
-            updateExpanded: this.updateExpanded,
-            isSingle: !('children' in child.props)
-        })
-    }
+    renderChildren = (child, key) => React.cloneElement(child, {
+            'Key': `${key}`,
+            'initKey': child.key,
+            'isHalfChecked': this.state.halfCheckedKeys.includes(`${key}`),
+            'isChecked': this.state.checkedKeys.includes(`${key}`),
+            'isExpanded': this.state.expandedKeys.includes(child.key),
+            'halfCheckedKeys': this.state.halfCheckedKeys,
+            'checkedKeys': this.state.checkedKeys,
+            'expandedKeys': this.state.expandedKeys,
+            'keyEntities': this.state.nodeTrack,
+            'onNodeClick': this.onNodeClick,
+            'updateExpanded': this.updateExpanded,
+            'isSingle': !('children' in child.props)
+    })
 
 
     render() {
         const { children } = this.props;
-        return (<div>
+
+return <div>
             {
-                !Array.isArray(children) ? this.renderChildren(children, 0) : children.map((i, idex) => {
-                    return this.renderChildren(i, idex)
-                })
+                !Array.isArray(children) ? this.renderChildren(children, 0) : children.map((i, idex) => this.renderChildren(i, idex))
             }
-        </div>)
+        </div>
     }
 }
-Tree.TreeNode = TreeNode
+Tree.propTypes = {
+    'checkedKeys': PropTypes.array,
+    'halfCheckedKeys': PropTypes.array,
+    'expandedKeys': PropTypes.array,
+    'defaultExpandedKeys': PropTypes.array,
+    'children': PropTypes.elementType
+}
+Tree.defaultProps = {
+    'checkedKeys': [],
+    'halfCheckedKeys': [],
+    'expandedKeys': [],
+    'defaultExpandedKeys': [],
+    'children': null
+}
+Tree.TreeNode = TreeNode;
+
 export default Tree

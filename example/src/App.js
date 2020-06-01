@@ -1,9 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Button, AnExample } from './es';
-import { AnotherExample } from './lib';
-import './es/style/css/index.css';
 
 function App() {
   return (
@@ -13,9 +10,6 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-          <AnExample name={'rtyui'}/>
-          <AnotherExample name={"23456789"}/>
-          <Button>and save to reload.</Button>
         <a
           className="App-link"
           href="https://reactjs.org"

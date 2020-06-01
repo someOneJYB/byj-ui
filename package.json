@@ -7,7 +7,7 @@
   "scripts": {
     "publish": "npm login && npm publish",
     "start": "cp -r lib example/src && cp -r es example/src && cd example && yarn && yarn start",
-    "build": "npx rollup -c --watch&& yarn lib && yarn es && yarn build:css",
+    "build": "rm -rf lib && rm -rf es && npx rollup -c && yarn lib && yarn es && yarn build:static",
     "codecov": "npx codecov",
     "lib": "babel src/index.js --presets=@babel/preset-env  --out-file lib/index.js",
     "es": "babel src/index.js --out-file es/index.js",
@@ -110,6 +110,8 @@
   "dependencies": {
     "@babel/node": "^7.10.1",
     "@babel/plugin-transform-runtime": "^7.10.1",
-    "@babel/runtime": "^7.10.2"
+    "@babel/runtime": "^7.10.2",
+    "babel-eslint": "^10.1.0",
+    "eslint-plugin-flowtype": "^5.1.3"
   }
 }
