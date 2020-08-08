@@ -114,8 +114,10 @@ class TreeNode extends Component {
         })
     }
 
+    // eslint-disable-next-line default-param-last
     renderChildren = (child = { 'props': {} }, key) =>
         // console.log('render node', child)
+        // eslint-disable-next-line implicit-arrow-linebreak
          React.cloneElement(child, {
             'Key': key,
             'initKey': child.key,
@@ -169,6 +171,7 @@ class TreeNode extends Component {
     change = () => {
         // 点击判断当前是否是否被点击，同时孩子元素被选中，另外需要处理父亲元素是否需要处理为半选择的状态
         // 点击节点选中先把子节点从选中中删除，然后寻找父节点从半选状态中删除再遍历父节点作为半选状态
+        // eslint-disable-next-line prefer-const
         let { checkedKeys, halfCheckedKeys } = this.props;
         const { Key, keyEntities } = this.props
         if (checkedKeys.indexOf(Key) > -1) {
@@ -252,7 +255,7 @@ TreeNode.propTypes = {
     'onNodeClick': PropTypes.func,
     'updateExpanded': PropTypes.func,
     'isSingle': PropTypes.bool,
-    'children': PropTypes.elementType,
+    'children': PropTypes.elementType
 }
 
 TreeNode.defaultProps = {

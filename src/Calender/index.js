@@ -69,13 +69,16 @@ return 30
         const startDayWeek = this.getStartYear();
         const length = startDayWeek === 0 ? 7 : startDayWeek;
         for (let i = 0; i < length - 1; i++) {
-            result.push(last--)
+            result.push({ 'num': last--,
+'month': month - 1 })
         }
         result.reverse()
-        result.push(1);
+        result.push({ 'num': 1,
+month });
         let activeItem;
         for (let i = 2; i <= allDay; i++) {
-            result.push(i)
+            result.push({ 'num': i,
+month })
         }
         let index = 0
         for (let j = 0; j < result.length; j++) {
@@ -85,7 +88,7 @@ return 30
             if (!weekend[index]) {
  weekend[index] = []
 }
-            if (activeDay === result[j]) {
+            if (activeDay === result[j].num) {
  activeItem = index
 }
             weekend[index].push(result[j]);
@@ -93,17 +96,16 @@ return 30
         if (!activeItem) {
  activeItem = 0
 }
-        console.log(activeItem, ' if(day === result[j])', day)
         // 添加额外的日历时间
         const l = weekend.length;
         let start = 1;
         if (weekend[l - 1].length < 7) {
             while (weekend[l - 1].length < 7) {
-                weekend[l - 1].push(start);
+                weekend[l - 1].push({ 'num': start,
+'month': month + 1 });
                 start++
             }
         }
-        console.log(year, month, day, activeDay, 'year, month, day, activeDay')
         // tODO 不执行是因为在constructor 中执行
         this.setState({
             'showDays': [...weekend],
@@ -151,10 +153,11 @@ return this.getCommonDays(month)
         onChange && onChange(`${year}-${month >= 10 ? month : `0${month}`}-${activeDay >= 10 ? activeDay : `0${activeDay}`}`)
     }
 
-    setDay = (i, index) => {
+    setDay = (i, index, month) => {
         this.setState({
             'activeDay': i,
-            'activeItem': index
+            'activeItem': index,
+            month
         }, () => {
             this.onChange()
         })
@@ -191,7 +194,10 @@ return <div className="table-con">
             {
                 showDays.map((item, index) => <tr className="calender-head" key={item[0]}>
                         {
-                            item.map((i, idx) => <td onClick={(e) => this.setDay(i, index)} className={i === activeDay && index === activeItem ? 'active' : ''} key={idx}>{i}</td>)
+                            item.map((i, idx) => <td onClick={(e) => this.setDay(i.num, index, i.month)}
+                                                     className={i.num === activeDay &&
+                                                     index === activeItem ? 'active' : ''}
+                                                     key={idx}>{i.num}</td>)
                         }
                     </tr>)
             }

@@ -78,7 +78,7 @@ class Picker extends React.Component {
 
 
     render() {
-        let { data, activeIndex, visible } = this.state;
+        const { data, activeIndex, visible } = this.state;
         const l = 2 - activeIndex;
         if (!visible) {
             return null
@@ -93,7 +93,7 @@ return <div>
             <div className="picker-all">
             <div className="absolute-item"></div>
             <div className="picker-con" style={{ 'height': `${data.length * 30}px`,
-'transform': `translate3d(0, ${l * 30}px, 0)` }} onTouchStart={this.start}  onTouchEnd={this.end}>
+'transform': `translate3d(0, ${l * 30}px, 0)` }} onTouchStart={this.start} onTouchEnd={this.end}>
                 {
                     data.map((item) => <div key={item} className="picker-item">{item}</div>)
                 }

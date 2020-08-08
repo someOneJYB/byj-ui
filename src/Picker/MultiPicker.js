@@ -81,7 +81,8 @@ return {
         data.forEach((i, idx) => {
             index.push(state[`activeIndex${idx}`])
         });
-        return index
+
+return index
     }
 
     end = (e, ind) => {

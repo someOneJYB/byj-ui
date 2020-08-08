@@ -19,8 +19,8 @@ class Carousel extends Component {
    start = () => {
        const { auto, duration } = this.props
        setTimeout(() => {
- auto && this.autoPlay()
-}, duration * 1000 * 3.5)
+            auto && this.autoPlay()
+       }, duration * 1000 * 3.5)
    }
 
    componentDidMount() {

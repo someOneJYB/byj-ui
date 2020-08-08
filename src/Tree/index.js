@@ -95,6 +95,7 @@ item,
 
 return <div>
             {
+                // eslint-disable-next-line max-len
                 !Array.isArray(children) ? this.renderChildren(children, 0) : children.map((i, idex) => this.renderChildren(i, idex))
             }
         </div>
